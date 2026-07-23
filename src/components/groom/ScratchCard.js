@@ -263,7 +263,20 @@ export default function GroomScratchCardSection() {
   const { t } = useLanguage();
   const [revealedCount, setRevealedCount] = useState(0);
   const [allRevealed, setAllRevealed] = useState(false);
+  const [particles, setParticles] = useState([]);
   const totalRef = useRef(0);
+
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 18 }).map(() => ({
+        width: Math.random() * 6 + 2,
+        height: Math.random() * 6 + 2,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: Math.random() * 5 + 5,
+      }))
+    );
+  }, []);
 
   const events = t?.events?.list ?? [];
   totalRef.current = events.length;
@@ -311,18 +324,18 @@ export default function GroomScratchCardSection() {
     >
       {/* Floating particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 18 }).map((_, i) => (
+        {particles.map((p, i) => (
           <motion.div
             key={i}
             className="absolute rounded-full bg-[#B8952A]/15"
             style={{
-              width: `${Math.random() * 6 + 2}px`,
-              height: `${Math.random() * 6 + 2}px`,
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
+              width: `${p.width}px`,
+              height: `${p.height}px`,
+              left: `${p.left}%`,
+              top: `${p.top}%`,
             }}
-            animate={{ y: [-20, 20, -20], opacity: [0.1, 0.5, 0.1] }}
-            transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, ease: "easeInOut" }}
+            animate={{ y: [-20, 20, -20], opacity: [0.1, 0.7, 0.1] }}
+            transition={{ duration: p.duration, repeat: Infinity, ease: "easeInOut" }}
           />
         ))}
       </div>
