@@ -25,6 +25,11 @@ export const metadata = {
   description: "Together with their families, Harsh & Shreya request the honour of your presence at their wedding celebration.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html

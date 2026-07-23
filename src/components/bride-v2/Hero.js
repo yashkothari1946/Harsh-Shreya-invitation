@@ -80,22 +80,32 @@ useEffect(() => {
         initial={false}
         animate={{ pointerEvents: gatesOpen ? "none" : "auto" }}
       >
-        {/* Left Gate */}
+        {/* Left Gate - WebP */}
         <motion.div
           initial={{ rotateY: 0 }}
           animate={{ rotateY: gatesOpen ? -110 : 0, opacity: gatesOpen ? 0 : 1 }}
           transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
           style={{ originX: 0, clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
-          className="absolute inset-0 w-full h-full bg-[url('/udaipur_gate.jpg')] bg-cover bg-center shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
-        />
-        {/* Right Gate */}
+          className="absolute inset-0 w-full h-full shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
+        >
+          <picture>
+            <source srcSet="/udaipur_gate.webp" type="image/webp" />
+            <img src="/udaipur_gate.jpg" alt="" className="w-full h-full object-cover" fetchpriority="high" decoding="async" />
+          </picture>
+        </motion.div>
+        {/* Right Gate - WebP */}
         <motion.div
           initial={{ rotateY: 0 }}
           animate={{ rotateY: gatesOpen ? 110 : 0, opacity: gatesOpen ? 0 : 1 }}
           transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
           style={{ originX: 1, clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }}
-          className="absolute inset-0 w-full h-full bg-[url('/udaipur_gate.jpg')] bg-cover bg-center shadow-[-10px_0_30px_rgba(0,0,0,0.5)]"
-        />
+          className="absolute inset-0 w-full h-full shadow-[-10px_0_30px_rgba(0,0,0,0.5)]"
+        >
+          <picture>
+            <source srcSet="/udaipur_gate.webp" type="image/webp" />
+            <img src="/udaipur_gate.jpg" alt="" className="w-full h-full object-cover" fetchpriority="high" decoding="async" />
+          </picture>
+        </motion.div>
 
         {/* Enter Button */}
         {!gatesOpen && (
@@ -189,14 +199,22 @@ useEffect(() => {
 
 </motion.div>
      
+      {/* Background image - WebP first, JPG fallback */}
       <motion.div
-        className="absolute inset-0 bg-cover bg-center z-0"
-        style={{
-          backgroundImage: "url('/udaipur_bg.jpg')",
-          y: bgY,
-          scale: bgScale
-        }}
-      />
+        className="absolute inset-0 z-0"
+        style={{ y: bgY, scale: bgScale }}
+      >
+        <picture>
+          <source srcSet="/udaipur_bg.webp" type="image/webp" />
+          <img
+            src="/udaipur_bg.jpg"
+            alt=""
+            className="w-full h-full object-cover"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </picture>
+      </motion.div>
       {/* Dark scrim so text is always visible over the palace bg */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/25 to-black/55 z-0" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#1a0008]/60 via-transparent to-transparent z-0" />
