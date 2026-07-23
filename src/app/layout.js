@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${cinzel.variable} ${montserrat.variable} ${greatVibes.variable}`}
     >
-      <body className="bg-[#fdfbf7] text-[#3c030a] font-sans antialiased overflow-x-hidden cursor-none">
+      <body className="bg-[#fdfbf7] text-[#3c030a] font-sans antialiased overflow-x-hidden">
         <ClientLayout>
           {children}
         </ClientLayout>

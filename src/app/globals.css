@@ -16,8 +16,7 @@
 }
 
 /* ─── Custom Cursor ─────────────────────────── */
-* { cursor: none !important; }
-a, button, [role="button"], canvas, label, select, input { cursor: none !important; }
+/* Custom cursor disabled */
 
 @theme {
   --color-maroon-50: #fbf2f3;

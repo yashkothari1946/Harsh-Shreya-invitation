@@ -14,9 +14,9 @@ export default function Foot() {
           className="w-7 h-7 object-contain"
         />
 
-        <span className="text-[#f5d67b] text-sm font-semibold tracking-wide">
+        <a href="https://vybtek.com" target="_blank" rel="noopener noreferrer" className="text-[#f5d67b] text-sm font-semibold tracking-wide hover:underline cursor-pointer">
           VybTek IT Solutions Udaipur
-        </span>
+        </a>
       </div>
     </footer>
   );
