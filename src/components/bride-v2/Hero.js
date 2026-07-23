@@ -27,7 +27,7 @@ export default function Hero({ onOpenInvitation }){
 
 useEffect(() => {
   setPetals(
-    Array.from({ length: 110 }, () => ({
+    Array.from({ length: 15 }, () => ({
       left: Math.random() * 100,
       delay: Math.random() * 3,
       duration: Math.random() * 4 + 5,
@@ -35,7 +35,7 @@ useEffect(() => {
   );
 
   setRoses(
-    Array.from({ length: 390 }, () => ({
+    Array.from({ length: 25 }, () => ({
       left: Math.random() * 100,
       delay: Math.random() * 2,
       duration: Math.random() * 3 + 4,
@@ -85,16 +85,16 @@ useEffect(() => {
           initial={{ rotateY: 0 }}
           animate={{ rotateY: gatesOpen ? -110 : 0, opacity: gatesOpen ? 0 : 1 }}
           transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-          style={{ originX: 0 }}
-          className="relative w-1/2 h-full bg-[url('/udaipur_gate.jpg')] bg-[length:200%_100%] bg-left border-r border-[#d4af37]/40 shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
+          style={{ originX: 0, clipPath: "polygon(0 0, 50% 0, 50% 100%, 0 100%)" }}
+          className="absolute inset-0 w-full h-full bg-[url('/udaipur_gate.jpg')] bg-cover bg-center shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
         />
         {/* Right Gate */}
         <motion.div
           initial={{ rotateY: 0 }}
           animate={{ rotateY: gatesOpen ? 110 : 0, opacity: gatesOpen ? 0 : 1 }}
           transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-          style={{ originX: 1 }}
-          className="relative w-1/2 h-full bg-[url('/udaipur_gate.jpg')] bg-[length:200%_100%] bg-right border-l border-[#d4af37]/40 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]"
+          style={{ originX: 1, clipPath: "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)" }}
+          className="absolute inset-0 w-full h-full bg-[url('/udaipur_gate.jpg')] bg-cover bg-center shadow-[-10px_0_30px_rgba(0,0,0,0.5)]"
         />
 
         {/* Enter Button */}
@@ -197,11 +197,13 @@ useEffect(() => {
           scale: bgScale
         }}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#fae6ec]/85 via-[#f5d8df]/75 to-[#f2c9d4]/90 z-0" />
+      {/* Dark scrim so text is always visible over the palace bg */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/25 to-black/55 z-0" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#1a0008]/60 via-transparent to-transparent z-0" />
 
-      {/* Decorative Traditional Border Overlay */}
-      <div className="absolute inset-4 md:inset-8 border border-gold-500/10 pointer-events-none z-10" />
-      <div className="absolute inset-5 md:inset-9 border border-dashed border-gold-500/5 pointer-events-none z-10" />
+      {/* Decorative corner borders */}
+      <div className="absolute inset-4 md:inset-8 border border-white/10 pointer-events-none z-10" />
+      <div className="absolute inset-5 md:inset-9 border border-dashed border-white/5 pointer-events-none z-10" />
 
       {/* Hero Content */}
     <div className="relative z-20 max-w-4xl px-6 pt-12 md:pt-16 flex flex-col items-center">
@@ -210,7 +212,7 @@ useEffect(() => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.3 }}
-          className="text-[#7b2c45] font-serif-royal text-sm md:text-base tracking-[0.25em] mb-6 uppercase"
+          className="text-white/90 font-serif-royal text-xs md:text-sm tracking-[0.35em] mb-6 uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
         >
           {t.hero.familyIntro}
         </motion.p>
@@ -221,7 +223,7 @@ useEffect(() => {
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.5, type: "spring" }}
-            className="font-calligraphy-royal text-[#7b2c45] text-6xl md:text-8xl drop-shadow-[0_2px_10px_rgba(123,44,69,0.2)]"
+            className="font-calligraphy-royal text-white text-6xl md:text-8xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
           >
            {t.hero.groom}
           </motion.h2>
@@ -236,7 +238,7 @@ useEffect(() => {
   <img
     src="/couplee.jpg"
     alt="Wedding Logo"
-    className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-[0_0_20px_rgba(212,175,55,0.35)]"
+    className="w-20 h-20 md:w-28 md:h-28 object-contain drop-shadow-[0_0_30px_rgba(255,255,255,0.5)]"
   />
 </motion.div>
 
@@ -244,7 +246,7 @@ useEffect(() => {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 1.5, type: "spring" }}
-            className="font-calligraphy-royal text-[#7b2c45] text-6xl md:text-8xl drop-shadow-[0_2px_10px_rgba(123,44,69,0.2)]"
+            className="font-calligraphy-royal text-white text-6xl md:text-8xl drop-shadow-[0_4px_20px_rgba(0,0,0,0.7)]"
           >
              {t.hero.bride}
           </motion.h2>
@@ -255,7 +257,7 @@ useEffect(() => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1.2, delay: 0.8 }}
-          className="text-[#96475d] text-lg md:text-2xl italic font-serif mt-2 mb-8 drop-shadow-sm"
+          className="text-white/85 text-sm md:text-base italic font-serif mt-2 mb-8 text-center max-w-lg leading-relaxed drop-shadow-[0_2px_10px_rgba(0,0,0,0.8)] px-4"
         >
           {t.hero.brideinviteRequest}
         </motion.p>
@@ -265,7 +267,7 @@ useEffect(() => {
           initial={{ opacity: 0, scale: 0 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, delay: 0.9 }}
-          className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#7b2c45]/60 to-transparent mb-8"
+          className="w-32 h-[1px] bg-gradient-to-r from-transparent via-white/50 to-transparent mb-8"
         />
 
       {/* Save The Date */}
@@ -273,16 +275,20 @@ useEffect(() => {
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ delay: 1, duration: 1 }}
-className="flex flex-col items-center mt-2 mb-2"
+  className="flex flex-col items-center mt-2 mb-6 w-full px-6"
 >
-  <span className="text-sm md:text-base tracking-[0.45em] uppercase text-[#7b2c45] font-semibold mb-4">
-    Save The Date
-  </span>
-
-  {/* Scratch Reveal */}
- <div className="relative w-[360px] md:w-[600px] h-[65px] md:h-[80px] flex items-center justify-center">
-    <HeroScratchDate text={t.hero.date} theme="maroon" />
+  {/* Label with pill background */}
+  <div className="mb-5 px-6 py-2 rounded-full bg-white/15 backdrop-blur-sm border border-white/25">
+    <span className="text-white text-xs md:text-sm tracking-[0.45em] uppercase font-serif-royal font-semibold drop-shadow-md">
+      ✦ Save The Date ✦
+    </span>
   </div>
+
+  {/* Enlarged Scratch Card */}
+  <div className="relative w-full max-w-[420px] md:max-w-[580px] h-[120px] md:h-[150px] flex items-center justify-center rounded-2xl overflow-hidden shadow-[0_20px_60px_rgba(0,0,0,0.4)] border-2 border-white/20">
+    <HeroScratchDate text={t.hero.date} theme="bride" />
+  </div>
+  <p className="mt-3 text-white/50 text-[10px] tracking-[0.3em] uppercase">Scratch the card to reveal</p>
 </motion.div>
 
         {/* Floating Button */}
@@ -290,15 +296,15 @@ className="flex flex-col items-center mt-2 mb-2"
           onClick={handleOpen}
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 1.2 }}
-          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 1, delay: 1.4 }}
+          whileHover={{ scale: 1.05, boxShadow: "0 15px 40px rgba(255,255,255,0.2)" }}
           whileTap={{ scale: 0.98 }}
-         className="group relative -mt-3 px-8 py-3.5 rounded-full overflow-hidden border border-[#7b2c45]/40 text-[#7b2c45] hover:text-white bg-transparent hover:bg-[#7b2c45] font-serif-royal text-xs md:text-sm tracking-[0.2em] cursor-pointer shadow-[0_0_15px_rgba(123,44,69,0.15)] transition-all duration-500 uppercase">
+          className="group relative px-10 py-4 rounded-full overflow-hidden border border-white/40 text-white bg-white/10 backdrop-blur-sm font-serif-royal text-xs md:text-sm tracking-[0.25em] cursor-pointer shadow-[0_8px_30px_rgba(0,0,0,0.3)] transition-all duration-500 uppercase">
           <span className="relative z-10 flex items-center gap-2">
             {t.hero.openBtn}
             <ChevronDown size={14} className="group-hover:translate-y-1 transition-transform duration-300" />
           </span>
-          <span className="absolute inset-0 bg-[#7b2c45] transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out -z-0" />
+          <span className="absolute inset-0 bg-white/20 transform scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-500 ease-out" />
         </motion.button>
       </div>
 

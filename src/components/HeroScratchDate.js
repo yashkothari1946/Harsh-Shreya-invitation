@@ -17,12 +17,10 @@ export default function HeroScratchDate({ text, theme = "dark" }) {
     light: ["#5a0008", "#b31325", "#5a0008"], // Crimson for groom (Wait, groom is light theme, crimson is for groom? Let me check)
   };
   
-  // Wait, bride theme uses gold text and crimson bg. Groom uses crimson text and gold bg? 
-  // Let me look at the Hero.js files I checked earlier.
-  // In `bride/Hero.js`: Golden Scratch: from-[#c69320] via-[#f5d67b] to-[#c69320]
-  // In `Hero.js` (groom): Golden Scratch: from-[#5a0008] via-[#b31325] to-[#5a0008]
-  
-  const currentColors = theme === "bride" ? overlayColors.dark : overlayColors.light;
+  // Gold overlay for bride theme, crimson for groom
+  const currentColors = theme === "bride"
+    ? ["#c69320", "#f9e5ae", "#d88c9f", "#f9e5ae", "#c69320"]  // rose-gold
+    : ["#5a0008", "#b31325", "#5a0008"];  // crimson
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -50,11 +48,11 @@ export default function HeroScratchDate({ text, theme = "dark" }) {
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       // Add "Scratch Here" text
-      ctx.font = "italic 400 16px 'Cinzel', serif";
-      ctx.fillStyle = theme === "bride" ? "rgba(60, 3, 10, 0.7)" : "rgba(253, 251, 247, 0.8)";
+      ctx.font = "bold 18px 'Cinzel', serif";
+      ctx.fillStyle = theme === "bride" ? "rgba(253,251,247,0.92)" : "rgba(253, 251, 247, 0.8)";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText("Scratch to Reveal Date", canvas.width / 2, canvas.height / 2);
+      ctx.fillText("✦  Scratch to Reveal Date  ✦", canvas.width / 2, canvas.height / 2);
     };
 
     resizeCanvas();
@@ -80,7 +78,7 @@ export default function HeroScratchDate({ text, theme = "dark" }) {
 
     ctx.globalCompositeOperation = "destination-out";
     ctx.beginPath();
-    ctx.arc(x, y, 25, 0, Math.PI * 2);
+    ctx.arc(x, y, 50, 0, Math.PI * 2);
     ctx.fill();
 
     checkReveal(ctx, canvas, e);
@@ -149,8 +147,8 @@ export default function HeroScratchDate({ text, theme = "dark" }) {
       
       {/* Date Text (hidden behind canvas) */}
       <motion.p
-        className={`absolute whitespace-nowrap font-serif-royal text-lg md:text-3xl tracking-[0.12em] font-semibold z-10 select-none ${
-          theme === "bride" ? "text-gold-500" : "text-[#8b0a16] drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]"
+        className={`absolute whitespace-nowrap font-serif-royal text-2xl md:text-4xl tracking-[0.1em] font-bold z-10 select-none ${
+          theme === "bride" ? "text-[#7b2c45]" : "text-[#8b0a16] drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]"
         }`}
       >
         {text}

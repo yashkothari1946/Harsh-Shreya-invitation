@@ -102,6 +102,15 @@ body {
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
+/* Pastel Glassmorphism - for bride-v2 theme */
+.glass-pastel {
+  background: rgba(253, 242, 244, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(232, 174, 191, 0.4);
+  box-shadow: 0 8px 32px rgba(123, 44, 69, 0.08);
+}
+
 /* Hide scrollbar but keep scroll functionality */
 .no-scrollbar::-webkit-scrollbar {
   display: none;
