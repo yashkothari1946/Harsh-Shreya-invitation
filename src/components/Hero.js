@@ -1,13 +1,23 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { ChevronDown } from "lucide-react";
 import { FaLeaf } from "react-icons/fa";
 
 export default function Hero({ onOpenInvitation }){
   const { t } = useLanguage();
+  const containerRef = useRef(null);
+  
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.05, 1.15]);
+  const flowersY = useTransform(scrollYProgress, [0, 1], ["0%", "45%"]);
 
  const [petals, setPetals] = useState([]);
  const [roses, setRoses] = useState([]);
@@ -53,11 +63,14 @@ useEffect(() => {
   return (
   <section
   id="home"
+  ref={containerRef}
   className="relative w-full min-h-[108vh] md:min-h-[112vh] flex flex-col justify-center items-center overflow-hidden text-center select-none"
 >
   {/* Flower Rain */}
-
-<div className="absolute inset-0 overflow-hidden pointer-events-none z-30">
+  <motion.div 
+    style={{ y: flowersY }}
+    className="absolute inset-0 overflow-hidden pointer-events-none z-30"
+  >
 
  {petals.map((petal, i) => (
     <motion.img
@@ -118,13 +131,14 @@ useEffect(() => {
 
 ))}
 
-</div>
+</motion.div>
      
-      <div
-        className="absolute inset-0 bg-cover bg-center z-0 scale-105"
+      <motion.div
+        className="absolute inset-0 bg-cover bg-center z-0"
         style={{
-          //backgroundImage: "url('/images/hero_bg.png')",
           backgroundImage: "url('lightbg.jpg')",
+          y: bgY,
+          scale: bgScale
         }}
       />
       {/* <div className="absolute inset-0 bg-gradient-to-b from-[#3c030a]/85 via-[#3c030a]/75 to-[#3c030a]/90 z-0" /> */}

@@ -9,9 +9,11 @@ import { useLanguage } from "@/context/LanguageContext";
 // ─── Individual Scratch Card ────────────────────────────────────────────────
 function ScratchTile({ event, index, onFullyScratched }) {
   const canvasRef = useRef(null);
+  const cardRef = useRef(null);
   const isDrawing = useRef(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const [scratchPercent, setScratchPercent] = useState(0);
+  const [hasStarted, setHasStarted] = useState(false);
   const lastPos = useRef(null);
   const revealedRef = useRef(false);
 
@@ -107,10 +109,20 @@ function ScratchTile({ event, index, onFullyScratched }) {
 
     if (pct > 30 && !revealedRef.current) {
       revealedRef.current = true;
-      // Clear the whole canvas to fully show the card
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       setIsRevealed(true);
-      onFullyScratched(index);
+      // Haptic feedback on mobile
+      if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
+      // Confetti burst at the actual card position
+      if (cardRef.current) {
+        const rect = cardRef.current.getBoundingClientRect();
+        onFullyScratched(index, {
+          x: (rect.left + rect.width / 2) / window.innerWidth,
+          y: (rect.top + rect.height / 2) / window.innerHeight,
+        });
+      } else {
+        onFullyScratched(index, { x: 0.5, y: 0.6 });
+      }
     }
   }, [index, onFullyScratched]);
 
@@ -118,6 +130,7 @@ function ScratchTile({ event, index, onFullyScratched }) {
     e.preventDefault();
     isDrawing.current = true;
     lastPos.current = null;
+    setHasStarted(true);
   }, []);
 
   const endScratch = useCallback(() => {
@@ -127,6 +140,7 @@ function ScratchTile({ event, index, onFullyScratched }) {
 
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 50, scale: 0.9 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       viewport={{ once: true }}
@@ -201,20 +215,39 @@ function ScratchTile({ event, index, onFullyScratched }) {
         {/* Scratch overlay canvas */}
         <AnimatePresence>
           {!isRevealed && (
-            <motion.canvas
-              ref={canvasRef}
-              width={600}
-              height={500}
-              exit={{ opacity: 0, transition: { duration: 0.4 } }}
-              className="absolute inset-0 w-full h-full rounded-3xl touch-none cursor-crosshair z-20"
-              onMouseDown={startScratch}
-              onMouseMove={scratch}
-              onMouseUp={endScratch}
-              onMouseLeave={endScratch}
-              onTouchStart={startScratch}
-              onTouchMove={scratch}
-              onTouchEnd={endScratch}
-            />
+            <>
+              <motion.canvas
+                ref={canvasRef}
+                width={600}
+                height={500}
+                exit={{ opacity: 0, transition: { duration: 0.5 } }}
+                className="absolute inset-0 w-full h-full rounded-3xl touch-none z-20"
+                onMouseDown={startScratch}
+                onMouseMove={scratch}
+                onMouseUp={endScratch}
+                onMouseLeave={endScratch}
+                onTouchStart={startScratch}
+                onTouchMove={scratch}
+                onTouchEnd={endScratch}
+              />
+              {/* Shimmer hint sweep — pointer-events-none */}
+              {!hasStarted && (
+                <div className="absolute inset-0 overflow-hidden rounded-3xl z-30 pointer-events-none">
+                  <div className="animate-scratch-hint absolute inset-0 w-1/3 h-full bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                </div>
+              )}
+              {/* Pulsing finger indicator */}
+              {!hasStarted && (
+                <motion.div
+                  className="absolute bottom-6 left-1/2 -translate-x-1/2 z-40 pointer-events-none flex flex-col items-center gap-1"
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+                >
+                  <span className="text-2xl select-none">👆</span>
+                  <span className="text-[10px] text-[#f8e7b8]/80 uppercase tracking-widest font-semibold">Scratch me</span>
+                </motion.div>
+              )}
+            </>
           )}
         </AnimatePresence>
 
@@ -251,30 +284,34 @@ export default function ScratchCardSection() {
   const events = t?.events?.list ?? [];
   totalRef.current = events.length;
 
-  const handleFullyScratched = useCallback((index) => {
+  const handleFullyScratched = useCallback((index, origin = { x: 0.5, y: 0.6 }) => {
     setRevealedCount((prev) => {
       const next = prev + 1;
 
-      // Fire celebratory confetti
+      // Burst at the actual card position
       confetti({
-        particleCount: 90,
-        spread: 70,
-        origin: { x: 0.5, y: 0.6 },
+        particleCount: 100,
+        spread: 65,
+        origin,
         colors: ["#d4af37", "#f7d977", "#7b0915", "#fff", "#f9e5ae"],
         scalar: 1.1,
       });
+      // Second burst with slight delay for layered effect
+      setTimeout(() => confetti({
+        particleCount: 50,
+        spread: 40,
+        origin: { x: origin.x, y: origin.y + 0.05 },
+        colors: ["#d4af37", "#ff6b9d", "#fff"],
+        scalar: 0.8,
+        startVelocity: 20,
+      }), 150);
 
       if (next >= totalRef.current) {
-        // All scratched → big burst
         setTimeout(() => {
-          confetti({
-            particleCount: 200,
-            spread: 120,
-            startVelocity: 45,
+          confetti({ particleCount: 250, spread: 130, startVelocity: 50,
             origin: { x: 0.5, y: 0.5 },
             colors: ["#d4af37", "#f7d977", "#7b0915", "#fff", "#f9e5ae", "#ff6b9d"],
-            scalar: 1.3,
-          });
+            scalar: 1.3 });
         }, 400);
         setAllRevealed(true);
       }
