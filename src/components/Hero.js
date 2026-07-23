@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { ChevronDown } from "lucide-react";
 import { FaLeaf } from "react-icons/fa";
+import HeroScratchDate from "./HeroScratchDate";
 
 export default function Hero({ onOpenInvitation }){
   const { t } = useLanguage();
@@ -224,42 +225,8 @@ className="flex flex-col items-center mt-2 mb-2"
   </span>
 
   {/* Scratch Reveal */}
- <div className="relative w-[360px] md:w-[600px] h-[55px] md:h-[70px] flex items-center justify-center overflow-hidden">
-
-    {/* Date */}
-    <motion.p
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{
-        delay: 2.2,
-        duration: 0.8,
-      }}
-    className="absolute whitespace-nowrap text-[#8b0a16] font-serif-royal text-lg md:text-3xl tracking-[0.12em] font-semibold z-10 drop-shadow-[0_1px_2px_rgba(255,255,255,0.7)]">
-      {t.hero.date}
-    </motion.p>
-
-    {/* Golden Scratch */}
-    <motion.div
-      initial={{ x: 0 }}
-      animate={{ x: "120%" }}
-      transition={{
-        delay: 1.2,
-        duration: 1.4,
-        ease: "easeInOut",
-      }}
-     className="absolute inset-0 bg-gradient-to-r from-[#5a0008] via-[#b31325] to-[#5a0008] z-20"
-    />
-
-    {/* Shine */}
-    <motion.div
-      initial={{ x: "-120%" }}
-      animate={{ x: "120%" }}
-      transition={{
-        delay: 2.4,
-        duration: 1,
-      }}
-    className="absolute inset-0 bg-gradient-to-r from-transparent via-[#ffb3bd]/60 to-transparent z-30"
-    />
+ <div className="relative w-[360px] md:w-[600px] h-[65px] md:h-[80px] flex items-center justify-center">
+    <HeroScratchDate text={t.hero.date} theme="groom" />
   </div>
 </motion.div>
 
