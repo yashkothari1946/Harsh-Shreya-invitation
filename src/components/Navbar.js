@@ -1,8 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Menu, X, Globe } from "lucide-react";
+import { Menu, X, Globe, Palette } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function Navbar() {
   const { t, lang, toggleLanguage } = useLanguage();
@@ -10,6 +11,9 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState("home");
   const targetDate = new Date("2026-12-11T19:00:00");
+  
+  const pathname = usePathname();
+  const router = useRouter();
 
 const [timeLeft, setTimeLeft] = useState({
   days: 0,
@@ -181,6 +185,18 @@ const [timeLeft, setTimeLeft] = useState({
 
         {/* Controls: Language Switch & Mobile Hamburger */}
         <div className="flex items-center gap-4">
+          {/* Theme Switcher Button */}
+          {(pathname === "/bride" || pathname === "/bride-v2") && (
+            <button
+              onClick={() => router.push(pathname === "/bride" ? "/bride-v2" : "/bride")}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gold-500/30 bg-gold-500/10 hover:bg-gold-500 text-maroon-900 hover:text-white transition-all duration-300 text-xs font-semibold cursor-pointer shadow-sm"
+            >
+              <Palette size={13} />
+              <span className="hidden sm:inline">{pathname === "/bride" ? "Pastel Theme" : "Royal Theme"}</span>
+              <span className="sm:hidden">{pathname === "/bride" ? "V2" : "V1"}</span>
+            </button>
+          )}
+
           {/* Language Switch Button */}
           <button
             onClick={toggleLanguage}
