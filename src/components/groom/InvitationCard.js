@@ -13,6 +13,19 @@ export default function GroomInvitationCard() {
   const [currentCard, setCurrentCard] = useState(0);
   const scrollLockRef = useRef(false);
   const cardsAreaRef = useRef(null);
+  const touchStartY = useRef(0);
+
+  // Lock body scroll when card is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+      // Ensure we are viewing the section
+      document.getElementById("invitation")?.scrollIntoView({ behavior: "smooth" });
+    } else {
+      document.body.style.overflow = "auto";
+    }
+    return () => { document.body.style.overflow = "auto"; };
+  }, [isOpen]);
 
   const cards = [
     lang === "hi" ? "/ganpatisthaapna.png" : "/card.jpg",
@@ -60,8 +73,39 @@ export default function GroomInvitationCard() {
     };
 
     cardsArea.addEventListener("wheel", handleWheel, { passive: false });
-    return () => cardsArea.removeEventListener("wheel", handleWheel);
+    return () => {
+      cardsArea.removeEventListener("wheel", handleWheel);
+    };
   }, [isOpen, currentCard, cards.length]);
+
+  const handleTouchStart = (e) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (!isOpen || scrollLockRef.current) return;
+    
+    const touchEndY = e.changedTouches[0].clientY;
+    const diff = touchStartY.current - touchEndY;
+    
+    // Ignore small swipes
+    if (Math.abs(diff) < 40) return;
+    
+    const goingDown = diff > 0;
+    const goingUp = diff < 0;
+
+    const canGoNext = currentCard < cards.length - 1;
+    const canGoPrev = currentCard > 0;
+
+    if (goingDown && !canGoNext) return;
+    if (goingUp && !canGoPrev) return;
+
+    scrollLockRef.current = true;
+    if (goingDown) setCurrentCard((prev) => prev + 1);
+    if (goingUp) setCurrentCard((prev) => prev - 1);
+
+    setTimeout(() => { scrollLockRef.current = false; }, 800);
+  };
 
   const handleCardWheel = (e) => {
     e.preventDefault();
@@ -218,15 +262,20 @@ export default function GroomInvitationCard() {
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative mx-auto w-full max-w-[970px] h-[420px] sm:h-[560px] md:h-[700px] lg:h-[780px] translate-y-[120px] sm:translate-y-[100px] md:translate-y-[80px]"
+              className="relative mx-auto w-full max-w-[970px] h-[75vh] min-h-[420px] max-h-[600px] sm:max-h-none sm:h-[560px] md:h-[700px] lg:h-[780px] translate-y-4 sm:translate-y-[100px] md:translate-y-[80px]"
             >
               {/* Card body */}
               <motion.div className="absolute bottom-0 left-0 w-full h-[380px] rounded-[35px] bg-gradient-to-br from-[#FDF9EF] via-[#F5EED8] to-[#EDE0C4] border-[3px] border-[#B8952A]/40 shadow-[0_30px_80px_rgba(184,149,42,0.2)] overflow-hidden">
                 <div className="absolute inset-5 rounded-[28px] border border-[#B8952A]/20" />
               </motion.div>
 
-              {/* Stacked cards */}
-              <div className="absolute inset-0 z-20" ref={cardsAreaRef}>
+              {/* Stacked Cards with smooth scroll animation */}
+               <div 
+                 className="absolute inset-0 z-20" 
+                 ref={cardsAreaRef}
+                 onTouchStart={handleTouchStart}
+                 onTouchEnd={handleTouchEnd}
+               >
                 {cards.map((card, index) => (
                   <motion.img
                     key={index}
@@ -239,9 +288,9 @@ export default function GroomInvitationCard() {
                       opacity: index <= currentCard ? 1 : 0,
                     }}
                     transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-                    onWheel={index === currentCard ? handleCardWheel : undefined}
-                    className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[84%] sm:w-[80%] md:w-[74%] lg:w-[64%] h-auto max-h-[78%] object-contain rounded-xl md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,0.25)]"
-                    style={{ zIndex: 20 + index, pointerEvents: index === currentCard ? "auto" : "none" }}
+                     onWheel={index === currentCard ? handleCardWheel : undefined}
+                     className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[84%] sm:w-[80%] md:w-[74%] lg:w-[64%] h-auto max-h-[70vh] sm:max-h-[78%] object-contain rounded-xl md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,.15)]"
+                     style={{ zIndex: 20 + index, pointerEvents: index === currentCard ? "auto" : "none" }}
                   />
                 ))}
               </div>
