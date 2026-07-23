@@ -20,14 +20,72 @@ const greatVibes = Great_Vibes({
   weight: ["400"],
 });
 
+const SITE_URL = "https://harsh-shreya-invitation.vercel.app";
+const OG_TITLE = "Harsh & Shreya | Wedding Invitation 💍";
+const OG_DESCRIPTION =
+  "Together with their families, Harsh Kothari & Shreya Vaya joyfully invite you to their royal wedding celebration in Udaipur on 11 December 2026.";
+const OG_IMAGE = `${SITE_URL}/og-image.jpg`;
+
 export const metadata = {
-  title: "Harsh & Shreya | Royal Wedding Invitation",
-  description: "Together with their families, Harsh & Shreya request the honour of your presence at their wedding celebration.",
+  metadataBase: new URL(SITE_URL),
+  title: OG_TITLE,
+  description: OG_DESCRIPTION,
+  keywords: [
+    "Harsh Shreya Wedding",
+    "Wedding Invitation",
+    "Udaipur Wedding",
+    "Royal Wedding 2026",
+    "Kothari Vaya",
+  ],
+  authors: [{ name: "Harsh & Shreya" }],
+
+  // ── Open Graph (Facebook, WhatsApp, LinkedIn, iMessage) ──
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    siteName: "Harsh & Shreya Wedding",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "Harsh & Shreya — Royal Wedding Invitation · Udaipur, December 2026",
+      },
+    ],
+    locale: "en_IN",
+  },
+
+  // ── Twitter / X Card ──
+  twitter: {
+    card: "summary_large_image",
+    title: OG_TITLE,
+    description: OG_DESCRIPTION,
+    images: [OG_IMAGE],
+    creator: "@harshshreya2026",
+  },
+
+  // ── Extra for WhatsApp rich previews ──
+  other: {
+    "og:image:width": "1200",
+    "og:image:height": "630",
+    "og:image:type": "image/jpeg",
+    "og:locale": "en_IN",
+    "theme-color": "#7b2c45",
+  },
+
+  // ── Robots ──
+  robots: {
+    index: true,
+    follow: false, // private wedding — don't get crawled deeply
+  },
 };
 
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: "#7b2c45",
 };
 
 export default function RootLayout({ children }) {
