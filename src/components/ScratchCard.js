@@ -107,7 +107,7 @@ function ScratchTile({ event, index, onFullyScratched }) {
     const pct = Math.round((transparent / (canvas.width * canvas.height)) * 100);
     setScratchPercent(pct);
 
-    if (pct > 30 && !revealedRef.current) {
+    if (pct > 10 && !revealedRef.current) {
       revealedRef.current = true;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       setIsRevealed(true);
