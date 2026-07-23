@@ -23,6 +23,8 @@ export default function Hero({ onOpenInvitation }){
  const [petals, setPetals] = useState([]);
  const [roses, setRoses] = useState([]);
 
+  const [gatesOpen, setGatesOpen] = useState(false);
+
 useEffect(() => {
   setPetals(
     Array.from({ length: 110 }, () => ({
@@ -40,6 +42,15 @@ useEffect(() => {
     }))
   );
 }, []);
+
+  // Lock body scroll when gates are closed
+  useEffect(() => {
+    if (!gatesOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [gatesOpen]);
 
   const handleOpen = () => {
 
@@ -62,6 +73,49 @@ useEffect(() => {
   };
 
   return (
+    <>
+      {/* 3D Palace Gates Overlay */}
+      <motion.div
+        className="fixed inset-0 z-[100] flex perspective-[1200px]"
+        initial={false}
+        animate={{ pointerEvents: gatesOpen ? "none" : "auto" }}
+      >
+        {/* Left Gate */}
+        <motion.div
+          initial={{ rotateY: 0 }}
+          animate={{ rotateY: gatesOpen ? -110 : 0, opacity: gatesOpen ? 0 : 1 }}
+          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+          style={{ originX: 0 }}
+          className="relative w-1/2 h-full bg-[url('/udaipur_gate.jpg')] bg-[length:200%_100%] bg-left border-r border-[#d4af37]/40 shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
+        />
+        {/* Right Gate */}
+        <motion.div
+          initial={{ rotateY: 0 }}
+          animate={{ rotateY: gatesOpen ? 110 : 0, opacity: gatesOpen ? 0 : 1 }}
+          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
+          style={{ originX: 1 }}
+          className="relative w-1/2 h-full bg-[url('/udaipur_gate.jpg')] bg-[length:200%_100%] bg-right border-l border-[#d4af37]/40 shadow-[-10px_0_30px_rgba(0,0,0,0.5)]"
+        />
+
+        {/* Enter Button */}
+        {!gatesOpen && (
+          <motion.button
+            onClick={() => setGatesOpen(true)}
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1, duration: 1 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 40px rgba(212,175,55,0.6)" }}
+            whileTap={{ scale: 0.95 }}
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 px-8 py-4 bg-gradient-to-br from-[#8d0d1a] to-[#3b0108] border-2 border-[#d4af37] text-[#f9e5ae] uppercase tracking-[0.3em] text-sm md:text-lg font-serif-royal rounded-full shadow-[0_15px_40px_rgba(0,0,0,0.7)] z-50 cursor-pointer overflow-hidden"
+          >
+            <span className="relative z-10 flex items-center gap-3">
+              Push to Enter
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#d4af37]/40 to-transparent -translate-x-full animate-[shine_3s_infinite]" />
+          </motion.button>
+        )}
+      </motion.div>
+
   <section
   id="home"
   ref={containerRef}
@@ -138,7 +192,7 @@ useEffect(() => {
       <motion.div
         className="absolute inset-0 bg-cover bg-center z-0"
         style={{
-          backgroundImage: "url('/images/hero_bg.png')",
+          backgroundImage: "url('/udaipur_bg.jpg')",
           y: bgY,
           scale: bgScale
         }}
@@ -254,5 +308,6 @@ className="flex flex-col items-center mt-2 mb-2"
       <div className="absolute bottom-8 left-8 w-12 h-12 md:w-16 md:h-16 border-b border-l border-gold-500/30 opacity-70 pointer-events-none" />
       <div className="absolute bottom-8 right-8 w-12 h-12 md:w-16 md:h-16 border-b border-r border-gold-500/30 opacity-70 pointer-events-none" />
     </section>
+    </>
   );
 }

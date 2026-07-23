@@ -50,15 +50,20 @@ function ScrollItem({ ceremony, index }) {
             duration: 1.8,
             ease: [0.22, 1, 0.36, 1],
           }}
-        className="w-full max-w-[760px] aspect-[3/2] min-h-[410px] sm:min-h-0 relative flex flex-col items-center animate-wind-sway"
+          className="w-full max-w-[760px] aspect-[3/2] min-h-[410px] sm:min-h-0 relative flex flex-col items-center animate-wind-sway"
           style={{
             transformOrigin: "top",
-            //backgroundImage: "url('/openroller,jpg.png')",
             backgroundImage: "url('/roller2.jpg')",
             backgroundSize: "100% calc(100% + 30px)",
             backgroundRepeat: "no-repeat",
+            border: "8px solid #c69320",
+            borderImage: "linear-gradient(45deg, #d4af37, #f7d977, #7b0915, #d4af37) 1",
+            borderRadius: "40px 40px 0 0",
+            boxShadow: "0 20px 50px rgba(0,0,0,0.6)"
           }}
         >
+          {/* Jharokha Arch Overlay */}
+          <div className="absolute top-0 left-0 right-0 h-1/4 bg-[#7b0915]/20 rounded-t-[32px] pointer-events-none z-0 border-b-[4px] border-[#d4af37]/60" />
           {/* Inner Golden border framing, kept inside the "paper" zone of the image */}
           <div
             className="absolute pointer-events-none opacity-45 border border-dashed"
@@ -178,11 +183,28 @@ export default function EventsScrolls() {
         </div>
 
         {/* Scroll Rollers Grid */}
-        <div className="space-y-4 sm:space-y-6">
+        <div className="space-y-4 sm:space-y-6 relative z-10 mb-20">
           {ceremonies.map((ceremony, idx) => (
             <ScrollItem key={idx} ceremony={ceremony} index={idx} />
           ))}
         </div>
+
+        {/* Royal Procession Animation Marquee */}
+        <div className="relative w-full h-[150px] overflow-hidden border-t-2 border-b-2 border-[#d4af37]/30 bg-[#1a0105] z-10 mt-10">
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+            className="absolute top-0 left-0 w-[200%] h-full flex"
+          >
+            <div className="w-1/2 h-full relative">
+              <img src="/procession.jpg" alt="Procession" className="w-full h-full object-cover mix-blend-screen opacity-70" />
+            </div>
+            <div className="w-1/2 h-full relative">
+              <img src="/procession.jpg" alt="Procession" className="w-full h-full object-cover mix-blend-screen opacity-70" />
+            </div>
+          </motion.div>
+        </div>
+
       </div>
     </section>
   );
