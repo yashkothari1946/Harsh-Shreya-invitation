@@ -299,7 +299,7 @@ export default function InvitationCard() {
               initial={{ opacity: 1 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="relative mx-auto w-full max-w-[970px] h-[75vh] min-h-[420px] max-h-[600px] sm:max-h-none sm:h-[560px] md:h-[700px] lg:h-[780px] translate-y-4 sm:translate-y-[100px] md:translate-y-[80px]"
+              className="relative mx-auto w-full max-w-[970px] h-[420px] sm:h-[560px] md:h-[700px] lg:h-[780px] translate-y-8 sm:translate-y-[100px] md:translate-y-[80px]"
             >
               <motion.div className="absolute bottom-0 left-0 w-full h-[380px] rounded-[35px] bg-gradient-to-br from-[#7b0715] via-[#5b0410] to-[#340108] border-[3px] border-[#d4af37]/40 shadow-[0_30px_80px_rgba(0,0,0,.45)] overflow-hidden">
                 <div className="absolute inset-5 rounded-[28px] border border-[#d4af37]/20" />
@@ -328,7 +328,7 @@ export default function InvitationCard() {
                        ease: [0.22, 1, 0.36, 1],
                      }}
                      onWheel={index === currentCard ? handleCardWheel : undefined}
-                     className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[84%] sm:w-[80%] md:w-[74%] lg:w-[64%] h-auto max-h-[70vh] sm:max-h-[78%] object-contain rounded-xl md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,.45)]"
+                     className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 w-[84%] sm:w-[80%] md:w-[74%] lg:w-[64%] h-auto max-h-[78%] object-contain rounded-xl md:rounded-[28px] shadow-[0_20px_60px_rgba(0,0,0,.45)]"
                      style={{
                        zIndex: 20 + index,
                        pointerEvents: index === currentCard ? "auto" : "none",
