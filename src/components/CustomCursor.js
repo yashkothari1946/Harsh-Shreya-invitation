@@ -70,7 +70,7 @@ export default function CustomCursor() {
           width: isPointer ? 44 : isClicking ? 28 : 36,
           height: isPointer ? 44 : isClicking ? 28 : 36,
           borderColor: isPointer ? "rgba(184,149,42,0.8)" : "rgba(212,175,55,0.5)",
-          backgroundColor: isPointer ? "rgba(212,175,55,0.08)" : "transparent",
+          backgroundColor: isPointer ? "rgba(212,175,55,0.08)" : "rgba(0,0,0,0)",
           opacity: isHidden ? 0 : 1,
         }}
         transition={{ type: "spring", stiffness: 250, damping: 22, mass: 0.5 }}
