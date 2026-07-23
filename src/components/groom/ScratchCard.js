@@ -1,0 +1,378 @@
+"use client";
+
+import React, { useRef, useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import confetti from "canvas-confetti";
+import { Calendar, MapPin, Sparkles, Star } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
+
+// ─── Individual Scratch Tile (Light Theme) ──────────────────────────────────
+function ScratchTile({ event, index, onFullyScratched }) {
+  const canvasRef = useRef(null);
+  const isDrawing = useRef(false);
+  const [isRevealed, setIsRevealed] = useState(false);
+  const [scratchPercent, setScratchPercent] = useState(0);
+  const lastPos = useRef(null);
+  const revealedRef = useRef(false);
+
+  // ── Draw navy overlay onto canvas ──
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+
+    // Deep navy gradient overlay (completely different from crimson)
+    const grad = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    grad.addColorStop(0, "#1B2340");
+    grad.addColorStop(0.45, "#2A3A60");
+    grad.addColorStop(1, "#1B2340");
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Antique gold sheen
+    const sheen = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+    sheen.addColorStop(0, "rgba(184,149,42,0)");
+    sheen.addColorStop(0.5, "rgba(184,149,42,0.15)");
+    sheen.addColorStop(1, "rgba(184,149,42,0)");
+    ctx.fillStyle = sheen;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // "Scratch to Reveal" text in gold
+    ctx.fillStyle = "rgba(212,175,55,0.85)";
+    ctx.font = `bold ${Math.max(13, canvas.width * 0.06)}px serif`;
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText("✦ Scratch to Reveal ✦", canvas.width / 2, canvas.height / 2 - 14);
+
+    ctx.font = `${Math.max(10, canvas.width * 0.045)}px serif`;
+    ctx.fillStyle = "rgba(248,231,184,0.55)";
+    ctx.fillText("~ Your Date Awaits ~", canvas.width / 2, canvas.height / 2 + 16);
+  }, []);
+
+  const getPos = (e, canvas) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    if (e.touches) {
+      return {
+        x: (e.touches[0].clientX - rect.left) * scaleX,
+        y: (e.touches[0].clientY - rect.top) * scaleY,
+      };
+    }
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY,
+    };
+  };
+
+  const scratch = useCallback((e) => {
+    if (!isDrawing.current) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    const pos = getPos(e, canvas);
+    ctx.globalCompositeOperation = "destination-out";
+
+    if (lastPos.current) {
+      ctx.beginPath();
+      ctx.moveTo(lastPos.current.x, lastPos.current.y);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.lineWidth = 44;
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+      ctx.stroke();
+    }
+
+    ctx.beginPath();
+    ctx.arc(pos.x, pos.y, 22, 0, Math.PI * 2);
+    ctx.fill();
+    lastPos.current = pos;
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    let transparent = 0;
+    for (let i = 3; i < imageData.data.length; i += 4) {
+      if (imageData.data[i] < 30) transparent++;
+    }
+    const pct = Math.round((transparent / (canvas.width * canvas.height)) * 100);
+    setScratchPercent(pct);
+
+    if (pct > 30 && !revealedRef.current) {
+      revealedRef.current = true;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      setIsRevealed(true);
+      onFullyScratched(index);
+    }
+  }, [index, onFullyScratched]);
+
+  const startScratch = useCallback((e) => {
+    e.preventDefault();
+    isDrawing.current = true;
+    lastPos.current = null;
+  }, []);
+
+  const endScratch = useCallback(() => {
+    isDrawing.current = false;
+    lastPos.current = null;
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: index * 0.12, ease: [0.22, 1, 0.36, 1] }}
+      className="relative group"
+    >
+      {/* Revealed card (light theme) */}
+      <div
+        className="relative w-full rounded-3xl overflow-hidden border-2 border-[#B8952A]/40 shadow-[0_20px_60px_rgba(184,149,42,0.15)]"
+        style={{ background: "linear-gradient(135deg,#ffffff 0%,#FDF9EF 50%,#ffffff 100%)" }}
+      >
+        {/* Ornamental corners */}
+        <div className="absolute top-2 left-2 w-8 h-8 border-l-2 border-t-2 border-[#B8952A]/50 rounded-tl-xl pointer-events-none z-10" />
+        <div className="absolute top-2 right-2 w-8 h-8 border-r-2 border-t-2 border-[#B8952A]/50 rounded-tr-xl pointer-events-none z-10" />
+        <div className="absolute bottom-2 left-2 w-8 h-8 border-l-2 border-b-2 border-[#B8952A]/50 rounded-bl-xl pointer-events-none z-10" />
+        <div className="absolute bottom-2 right-2 w-8 h-8 border-r-2 border-b-2 border-[#B8952A]/50 rounded-br-xl pointer-events-none z-10" />
+
+        <div className="p-6 md:p-8">
+          {/* Badge row */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="text-[10px] uppercase tracking-[0.4em] text-[#8B6914]/60 font-semibold">
+              Event {String(index + 1).padStart(2, "0")}
+            </span>
+            {isRevealed && (
+              <motion.div
+                initial={{ scale: 0, rotate: -30 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 280, damping: 14 }}
+                className="flex items-center gap-1 px-2 py-1 rounded-full bg-[#1B2340]/10 border border-[#1B2340]/30"
+              >
+                <Sparkles size={11} className="text-[#1B2340]" />
+                <span className="text-[9px] uppercase tracking-widest text-[#1B2340] font-bold">Revealed!</span>
+              </motion.div>
+            )}
+          </div>
+
+          {/* Event image */}
+          <div className="relative mb-5 rounded-2xl overflow-hidden h-40 md:h-48">
+            <img src={event.image} alt={event.name} className="w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1B2340]/60 via-transparent to-transparent" />
+          </div>
+
+          {/* Event name */}
+          <h3 className="font-calligraphy-royal text-2xl md:text-3xl text-[#1B2340] mb-4">{event.name}</h3>
+
+          {/* Details */}
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-[#3D3D4E]/80">
+              <Calendar size={14} className="text-[#B8952A] shrink-0" />
+              <span className="text-sm font-medium">{event.date}</span>
+            </div>
+            <div className="flex items-center gap-2 text-[#3D3D4E]/80">
+              <MapPin size={14} className="text-[#B8952A] shrink-0" />
+              <span className="text-sm">{event.venue}</span>
+            </div>
+            {event.time && (
+              <div className="flex items-center gap-2 text-[#3D3D4E]/80">
+                <Star size={14} className="text-[#B8952A] shrink-0" />
+                <span className="text-sm">{event.time}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="my-4 h-px bg-gradient-to-r from-transparent via-[#B8952A]/40 to-transparent" />
+          <p className="text-xs leading-6 text-[#5A4A2E]/60 italic">{event.desc}</p>
+        </div>
+
+        {/* Canvas scratch overlay */}
+        <AnimatePresence>
+          {!isRevealed && (
+            <motion.canvas
+              ref={canvasRef}
+              width={600}
+              height={500}
+              exit={{ opacity: 0, transition: { duration: 0.4 } }}
+              className="absolute inset-0 w-full h-full rounded-3xl touch-none cursor-crosshair z-20"
+              onMouseDown={startScratch}
+              onMouseMove={scratch}
+              onMouseUp={endScratch}
+              onMouseLeave={endScratch}
+              onTouchStart={startScratch}
+              onTouchMove={scratch}
+              onTouchEnd={endScratch}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* Progress hint */}
+        {!isRevealed && scratchPercent > 5 && (
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+            <div className="px-3 py-1 rounded-full bg-[#1B2340]/50 backdrop-blur-sm border border-[#B8952A]/30">
+              <div className="flex items-center gap-2">
+                <div className="w-16 h-1 rounded-full bg-white/20 overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-[#B8952A] to-[#D4AF37] rounded-full"
+                    animate={{ width: `${scratchPercent}%` }}
+                    transition={{ ease: "easeOut" }}
+                  />
+                </div>
+                <span className="text-[10px] text-[#F5EED8]">{scratchPercent}%</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── Main Section (Light Theme) ──────────────────────────────────────────────
+export default function GroomScratchCardSection() {
+  const { t } = useLanguage();
+  const [revealedCount, setRevealedCount] = useState(0);
+  const [allRevealed, setAllRevealed] = useState(false);
+  const totalRef = useRef(0);
+
+  const events = t?.events?.list ?? [];
+  totalRef.current = events.length;
+
+  const handleFullyScratched = useCallback((index) => {
+    setRevealedCount((prev) => {
+      const next = prev + 1;
+
+      confetti({
+        particleCount: 90,
+        spread: 70,
+        origin: { x: 0.5, y: 0.6 },
+        colors: ["#1B2340", "#B8952A", "#D4AF37", "#6B8F71", "#fff", "#F5EED8"],
+        scalar: 1.1,
+      });
+
+      if (next >= totalRef.current) {
+        setTimeout(() => {
+          confetti({
+            particleCount: 200,
+            spread: 120,
+            startVelocity: 45,
+            origin: { x: 0.5, y: 0.5 },
+            colors: ["#1B2340", "#B8952A", "#D4AF37", "#6B8F71", "#fff", "#F5EED8"],
+            scalar: 1.3,
+          });
+        }, 400);
+        setAllRevealed(true);
+      }
+
+      return next;
+    });
+  }, []);
+
+  if (!events.length) return null;
+
+  return (
+    <section
+      id="scratch-reveal"
+      className="relative overflow-hidden py-24 md:py-32 bg-gradient-to-b from-[#FEFCF7] via-[#F5F0E8] to-[#FEFCF7]"
+    >
+      {/* Floating particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 18 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute rounded-full bg-[#B8952A]/15"
+            style={{
+              width: `${Math.random() * 6 + 2}px`,
+              height: `${Math.random() * 6 + 2}px`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{ y: [-20, 20, -20], opacity: [0.1, 0.5, 0.1] }}
+            transition={{ duration: Math.random() * 5 + 5, repeat: Infinity, ease: "easeInOut" }}
+          />
+        ))}
+      </div>
+
+      {/* Very subtle radial */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(184,149,42,0.05),transparent_70%)] pointer-events-none" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-6">
+        {/* Section Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.9 }}
+          className="text-center mb-16"
+        >
+          <p className="text-[#B8952A] tracking-[0.45em] uppercase text-xs mb-3">✦ Interactive ✦</p>
+          <h2 className="font-calligraphy-royal text-4xl md:text-6xl text-[#1B2340]">
+            Scratch &amp; Reveal
+          </h2>
+          <p className="mt-4 text-[#3D3D4E]/70 text-sm md:text-base max-w-xl mx-auto leading-7">
+            Our special dates are hidden just for you — scratch each card to uncover the magic moments we&apos;d love to share with you.
+          </p>
+
+          <div className="flex justify-center items-center gap-3 mt-6">
+            <div className="w-14 h-px bg-[#B8952A]/40" />
+            <Sparkles size={16} className="text-[#B8952A]" />
+            <div className="w-14 h-px bg-[#B8952A]/40" />
+          </div>
+
+          {/* Progress counter */}
+          <motion.div className="mt-6 inline-flex items-center gap-3 px-5 py-2 rounded-full border border-[#B8952A]/30 bg-[#B8952A]/5 backdrop-blur-sm">
+            <span className="text-[#B8952A] text-sm font-semibold">{revealedCount}</span>
+            <span className="text-[#3D3D4E]/50 text-xs uppercase tracking-widest">of {events.length} Revealed</span>
+            <div className="w-20 h-1 rounded-full bg-[#1B2340]/10 overflow-hidden">
+              <motion.div
+                className="h-full bg-gradient-to-r from-[#B8952A] to-[#D4AF37]"
+                animate={{ width: `${(revealedCount / Math.max(events.length, 1)) * 100}%` }}
+                transition={{ ease: "easeOut", duration: 0.5 }}
+              />
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {events.map((event, i) => (
+            <ScratchTile
+              key={i}
+              event={event}
+              index={i}
+              onFullyScratched={handleFullyScratched}
+            />
+          ))}
+        </div>
+
+        {/* All Revealed Banner */}
+        <AnimatePresence>
+          {allRevealed && (
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 18 }}
+              className="mt-16 text-center"
+            >
+              <div className="inline-block px-10 py-8 rounded-[32px] border-2 border-[#B8952A]/40 bg-gradient-to-br from-white/90 via-[#FDF9EF]/90 to-[#F5EED8]/80 backdrop-blur-md shadow-[0_30px_80px_rgba(184,149,42,0.12)]">
+                <p className="text-[#B8952A] text-xs uppercase tracking-[0.5em] mb-3">You Found Them All!</p>
+                <h3 className="font-calligraphy-royal text-3xl md:text-5xl text-[#1B2340]">
+                  We Can&apos;t Wait to See You ✨
+                </h3>
+                <p className="mt-4 text-[#3D3D4E]/70 text-sm max-w-md mx-auto leading-7">
+                  All dates have been revealed. Mark your calendar and join us for the celebration of a lifetime!
+                </p>
+                <div className="flex justify-center mt-6">
+                  <div className="flex items-center gap-2">
+                    <div className="w-12 h-px bg-[#B8952A]/40" />
+                    <span className="text-[#B8952A] text-lg">♥</span>
+                    <div className="w-12 h-px bg-[#B8952A]/40" />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}

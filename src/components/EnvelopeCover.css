@@ -1,0 +1,75 @@
+/* EnvelopeCover.css */
+.envelope-cover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1000;
+}
+
+/* Background Setup */
+.ec-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.ec-bg-img {
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Envelope Container */
+.ec-card-wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Envelope Styling */
+.ec-card-btn {
+  position: relative;
+  width: 85vw;
+  max-width: 450px;
+  aspect-ratio: 1.5; /* Envelope ka aspect ratio set karein */
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+}
+
+.ec-card-btn:hover {
+  transform: scale(1.02);
+}
+
+.ec-img {
+  object-fit: contain;
+}
+
+/* Hint Text */
+.ec-hint {
+  color: #fff;
+  font-family: serif;
+  font-size: 1.2rem;
+  letter-spacing: 2px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  pointer-events: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .ec-card-btn {
+    width: 90vw;
+  }
+}

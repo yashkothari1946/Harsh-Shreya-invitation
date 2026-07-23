@@ -1,0 +1,143 @@
+@import "tailwindcss";
+
+@theme {
+  --color-maroon-50: #fbf2f3;
+  --color-maroon-100: #f6e2e5;
+  --color-maroon-500: #8c0c1b;
+  --color-maroon-800: #5c0612;
+  --color-maroon-900: #3c030a;
+  
+  --color-gold-100: #faf3e0;
+  --color-gold-300: #ebd89b;
+  --color-gold-500: #d4af37;
+  --color-gold-700: #aa771c;
+  --color-gold-900: #73500f;
+
+  --color-ivory: #fdfbf7;
+  
+  --font-serif: var(--font-cinzel), Georgia, serif;
+  --font-sans: var(--font-montserrat), Helvetica, Arial, sans-serif;
+  --font-calligraphy: var(--font-great-vibes), cursive;
+}
+
+:root {
+  --background: #fdfbf7;
+  --foreground: #3c030a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/* Custom Utilities for Premium Aesthetics */
+.font-serif-royal {
+  font-family: var(--font-serif);
+}
+
+.font-calligraphy-royal {
+  font-family: var(--font-calligraphy);
+}
+
+/* Luxury Gold Gradient Texts & Borders */
+.text-gold-gradient {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa771c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gold-gradient {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa771c 100%);
+}
+
+.border-gold-gradient {
+  border-image: linear-gradient(135deg, #f3e5ab 0%, #d4af37 50%, #aa771c 100%) 1;
+}
+
+.text-maroon-gradient {
+  background: linear-gradient(135deg, #8c0c1b 0%, #5c0612 50%, #3c030a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glassmorphism Styles */
+.glass {
+  background: rgba(253, 251, 247, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.glass-dark {
+  background: rgba(60, 3, 10, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.glass-gold {
+  background: rgba(212, 175, 55, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #fdfbf7;
+}
+::-webkit-scrollbar-thumb {
+  background: #5c0612;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}
+
+/* Golden Sparkle Glow Keyframes */
+@keyframes sparkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
+
+.animate-sparkle {
+  animation: sparkle 3s infinite ease-in-out;
+}
+
+/* Page flip 3D styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+.preserve-3d {
+  transform-style: preserve-3d;
+}
+.backface-hidden {
+  backface-visibility: hidden;
+}
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+/* Hide Scrollbar */
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
